@@ -43,7 +43,7 @@ public class DelayCountWithMultipleOutputs {
     job.setInputFormatClass(TextInputFormat.class);
     job.setOutputFormatClass(TextOutputFormat.class);
     // 출력키 및 출력값 유형 설정
-    job.setOutputKeyClass(Text.class);
+    job.setOutputKeyClass(Text.class); //문자열 기반. "1988,1" 형태 => 1988,10 < 1988,2 
     job.setOutputValueClass(IntWritable.class);
 
     // MultipleOutputs 설정
