@@ -16,17 +16,19 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import dataexpo.mapreduce.DelayCountMapperWithCounter;
+import dataexpo.mapreduce.DelayCountMapperWithCounter2;
 import dataexpo.mapreduce.DelayCountReducer;
 import dataexpo.mapreduce.DelayCounters;
 
 import org.apache.hadoop.conf.Configured;
 // 옵션값에 따라서 출발지연정보, 도착지연정보를 하나의 프로그램에서 처리하기
 // 정시출발, 지연출발,일찍출발 등의 정보들을 출력하기
-public class DelayCount extends Configured implements Tool {
+// 항공사코드를 기준으로 지연 건수 파일에 생성하기.
+public class DelayCount2 extends Configured implements Tool {
   public static void main(String[] args) throws Exception {
-//	String arg[] = {"-D","workType=departure","infile/1987.csv","outfile/d-1987"};  
-	String arg[] = {"-D","workType=arrival","infile/1987.csv","outfile/a-1987"};  
-    int res = ToolRunner.run(new Configuration(),new DelayCount(),arg);
+//	String arg[] = {"-D","workType=departure","infile/1987.csv","outfile/carr-d-1987"};  
+	String arg[] = {"-D","workType=arrival","infile/1987.csv","outfile/carr-a-1987"};  
+    int res = ToolRunner.run(new Configuration(),new DelayCount2(),arg);
     System.out.println("MR-Job Result:" + res);
   }
   public int run(String[] args) throws Exception {
@@ -40,8 +42,8 @@ public class DelayCount extends Configured implements Tool {
     Job job = new Job(getConf(), "DelayCount");
     FileInputFormat.addInputPath(job, new Path(otherArgs[0]));
     FileOutputFormat.setOutputPath(job, new Path(otherArgs[1]));
-    job.setJarByClass(DelayCount.class);
-    job.setMapperClass(DelayCountMapperWithCounter.class);
+    job.setJarByClass(DelayCount2.class); //작업클래스
+    job.setMapperClass(DelayCountMapperWithCounter2.class); //항공사별 지연정보
     job.setReducerClass(DelayCountReducer.class);
     job.setInputFormatClass(TextInputFormat.class);
     job.setOutputFormatClass(TextOutputFormat.class);

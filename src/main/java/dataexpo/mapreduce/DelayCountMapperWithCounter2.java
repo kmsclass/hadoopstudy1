@@ -8,7 +8,7 @@ import dataexpo.Airline;
 
 import java.io.IOException;
 
-public class DelayCountMapperWithCounter extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class DelayCountMapperWithCounter2 extends Mapper<LongWritable, Text, Text, IntWritable> {
   private String workType;
   private final static IntWritable one = new IntWritable(1);
   private Text outputKey = new Text();
@@ -22,7 +22,7 @@ public class DelayCountMapperWithCounter extends Mapper<LongWritable, Text, Text
     if (workType.equals("departure")) {
       if (parser.isDepartureDelayAvailable()) { //출발지연 대상인 경우
         if (parser.getDepartureDelayTime() > 0) { //출발지연된 항공기
-          outputKey.set(parser.getYear() + "," + parser.getMonth()); //맵퍼의 키 설정
+          outputKey.set(parser.getUniqueCarrier()); //맵퍼의 키 설정
           context.write(outputKey, one);
         } else if (parser.getDepartureDelayTime() == 0) { //정시 출발인 경우
           context.getCounter(DelayCounters.scheduled_departure).increment(1);
@@ -35,7 +35,7 @@ public class DelayCountMapperWithCounter extends Mapper<LongWritable, Text, Text
     } else if (workType.equals("arrival")) {
       if (parser.isArriveDelayAvailable()) { //도착지연 대상
         if (parser.getArriveDelayTime() > 0) { //도착지연된 경우
-          outputKey.set(parser.getYear() + "," + parser.getMonth());
+          outputKey.set(parser.getUniqueCarrier());
           context.write(outputKey, one);
         } else if (parser.getArriveDelayTime() == 0) { //정시도착
           context.getCounter(DelayCounters.scheduled_arrival).increment(1);
